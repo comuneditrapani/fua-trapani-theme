@@ -9,6 +9,7 @@
 body {
 	color: #ff7f00;
 	background: #121200;
+	
 }
 
 .it-header-center-wrapper {
@@ -68,7 +69,8 @@ body {
 }
 .bg-primary
 {
-	--bs-primary-rgb: #7a1510;
+	/*--bs-primary-rgb: #7a1510;*/
+	background-color: #7a1510 !important;
 }
 
 .it-header-slim-right-zone
