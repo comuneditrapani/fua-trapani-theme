@@ -6,8 +6,30 @@
  */
 
 
+:root {
+    --bs-link-hover-color: #7a1510;
+    --bs-link-color: #912c27;
+    --bs-breadcrumb-item-active-color: #7a1510;
+}
+
+main {
+	background-color: #ebeef0;
+}
+
+.card-body {
+	background-color: #ebeef0;
+}
+
+.card-wrapper {
+	background-color: #ebeef0;
+}
+
+.bg-white {
+	background-color: #ebeef0 !important;
+}
+
 body {
-	color: #ff7f00;
+	color: #14110f;
 	background: #121200;
 	
 }
