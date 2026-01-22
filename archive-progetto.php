@@ -13,22 +13,20 @@ get_header();
 
     <div class="row">
       <div class="col-12 px-lg-4 py-3">
-        <h1 class="mb-2"><?php post_type_archive_title(); ?></h1>
-        <p class="lead mb-4">Elenco dei progetti finanziati (PNRR e altri programmi), con schede di dettaglio.</p>
+        <h1 class="mb-2">Elenco Progetti</h1>
+        <p class="lead mb-4">Elenco dei progetti, con schede di dettaglio.</p>
 
         <?php if (have_posts()) : ?>
           <div class="row g-3">
             <?php while (have_posts()) : the_post();
 
               // Campi ACF (adatta i nomi ai tuoi)
-              $cup        = get_field('cup') ?? '';
-              $importo    = get_field('importo_intervento') ?? '';
-              $avanz      = get_field('avanzamento') ?? '';
+              $beneficiario = esc_html(get_field('beneficiario') ?? '');
+              $cup        = esc_html(get_field('cup') ?? '');
+              $importo    = esc_html(get_field('importo_intervento') ?? 'da definire');
+              $avanzamento = esc_html(get_field('avanzamento') ?? '');
 
-              $importo_fmt = '';
-              if ($importo !== '') {
-                $importo_fmt = is_numeric($importo) ? number_format_i18n((float)$importo, 2) . ' €' : (string)$importo;
-              }
+              $importo_fmt = is_numeric($importo) ? number_format_i18n((float)$importo, 2) . ' €' : (string)$importo;
             ?>
               <div class="col-12 col-md-6 col-xl-4">
                 <div class="card-wrapper card-space h-100">
@@ -41,18 +39,14 @@ get_header();
                         </a>
                       </h2>
 
-                      <?php if (!empty($avanz)) : ?>
-                        <div class="mb-2">
-                          <span class="badge bg-primary"><?php echo esc_html($avanz); ?></span>
-                        </div>
-                      <?php endif; ?>
-
                       <dl class="row mb-3 small">
-                        <?php if (!empty($cup)) : ?>
-                          <dt class="col-5">CUP</dt><dd class="col-7"><?php echo esc_html($cup); ?></dd>
-                        <?php endif; ?>
-                        <?php if (!empty($importo_fmt)) : ?>
-                          <dt class="col-5">Importo</dt><dd class="col-7"><?php echo esc_html($importo_fmt); ?></dd>
+                        <dt class="col-5">Beneficiario</dt><dd class="col-7"><?= $beneficiario ?></dd>
+                        <dt class="col-5">Importo</dt><dd class="col-7"><?= $importo_fmt ?></dd>
+                        <?php if (!empty($avanzamento)) : ?>
+                        <dt class="col-5">Avanzamento</dt>
+                        <dd class="col-7">
+                          <span class="badge bg-primary"><?= $avanzamento ?></span>
+                        </dd>
                         <?php endif; ?>
                       </dl>
 
