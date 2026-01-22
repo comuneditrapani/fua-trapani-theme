@@ -60,5 +60,16 @@ add_filter('register_post_type_args', function ($args, $post_type) {
   return $args;
 }, 20, 2);
 
+/*ELIMINA IL BREADCRUMB DUPLICATO nella pagina Progetti*/
+add_filter('breadcrumb_trail_args', function ($args) {
+
+  if (is_post_type_archive('progetto')) {
+    // Rimuove la voce finale (quella "active") che duplica il nome dell’archivio
+    $args['show_title'] = false;
+  }
+
+  return $args;
+});
+
 ?>
 
