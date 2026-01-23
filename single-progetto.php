@@ -116,13 +116,13 @@ if ($importo_intervento !== '') {
           <div class="accordion-item">
             <h2 class="accordion-header" id="headingAvanzamento">
               <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#collapseAvanzamento" aria-expanded="false" aria-controls="collapseAvanzamento">
-                Avanzamento
+                Stato di avanzamento
               </button>
             </h2>
             <div id="collapseAvanzamento" class="accordion-collapse collapse" aria-labelledby="headingAvanzamento" data-bs-parent="#accordionProgetto">
               <div class="accordion-body">
                 <?php if (!empty($avanzamento)) : ?>
-                <p class="mb-0"><?php echo esc_html($avanzamento); ?></p>
+                <span class="badge bg-primary"><?php echo esc_html($avanzamento); ?></span>
                 <?php else : ?>
                 <p class="mb-0 text-muted">Informazione non disponibile.</p>
                 <?php endif; ?>
