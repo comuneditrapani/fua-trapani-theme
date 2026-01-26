@@ -40,17 +40,6 @@ get_header();
                                 <?php
                                 the_content();
                                 ?>
-                                <div class="callout note">
-                                    <div class="callout-inner">
-                                        <div class="callout-title">
-                                            <svg class="icon"><use href="#it-info-circle"></use></svg>
-                                            <span class="visually-hidden">Attenzione</span> 
-                                            <span class="text">Attenzione</span>
-                                        </div>
-                                        <p><strong>Pagina `page.php`: Questo è un sito demo e il template di questa pagina non è ancora disponibile.</strong></p>
-                                        <p>Controlla se è disponibile il <a href="https://www.figma.com/community/file/1262690210012419806/comuni-modello-sito-e-servizi">layout su Figma</a>, il <a href="https://italia.github.io/design-comuni-pagine-statiche/">template HTML</a> tra le risorse del modello o consulta il <a href="https://designers.italia.it/files/resources/modelli/comuni/adotta-il-modello-di-sito-comunale/definisci-architettura-e-contenuti/Architettura-informazione-sito-Comuni.ods">documento di architettura (OSD 65kb)</a> per costruire il template in autonomia.</p>
-                                    </div>
-                                </div>
                             </div>
                         </div>
                         <div class="row variable-gutters">
