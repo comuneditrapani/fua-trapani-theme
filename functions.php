@@ -328,23 +328,17 @@ add_action('pre_get_posts', function ($query) {
    */
   $ord = isset($_GET['ord']) ? sanitize_text_field(wp_unslash($_GET['ord'])) : 'event_desc';
 
-  if ($ord === 'title_asc') {
+  list($field, $order) = explode("_", $ord);
+
+  if ($field === 'title') {
     $query->set('orderby', 'title');
-    $query->set('order', 'ASC');
-  } elseif ($ord === 'title_desc') {
-    $query->set('orderby', 'title');
-    $query->set('order', 'DESC');
   } else {
-    // Default: ordinamento per data evento più recente
+    // ordinamento per data evento
     $query->set('meta_key', '_last_event_date_ymd');
     $query->set('orderby', 'meta_value_num');
-
-    if ($ord === 'event_asc') {
-      $query->set('order', 'ASC');
-    } else {
-      $query->set('order', 'DESC');
-    }
   }
+  $query->set('order', $order);
+
 
 }, 30); // priority 30: per farlo girare dopo altri eventuali filtri tema/plugin
 
