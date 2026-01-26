@@ -19,10 +19,10 @@ get_header();
  * 1) Recupero valori correnti dei filtri (da URL).
  *    Li usiamo per ripopolare i campi del form dopo l’invio (UX).
  */
-$q     = isset($_GET['q']) ? sanitize_text_field(wp_unslash($_GET['q'])) : '';
-$benef = isset($_GET['beneficiario']) ? sanitize_text_field(wp_unslash($_GET['beneficiario'])) : '';
-$avz   = isset($_GET['avanzamento']) ? sanitize_text_field(wp_unslash($_GET['avanzamento'])) : '';
-$ord   = isset($_GET['ord']) ? sanitize_text_field(wp_unslash($_GET['ord'])) : 'event_desc';
+$q            = isset($_GET['q']) ? sanitize_text_field(wp_unslash($_GET['q'])) : '';
+$beneficiario = isset($_GET['beneficiario']) ? sanitize_text_field(wp_unslash($_GET['beneficiario'])) : '';
+$avanzamento  = isset($_GET['avanzamento']) ? sanitize_text_field(wp_unslash($_GET['avanzamento'])) : '';
+$ord          = isset($_GET['ord']) ? sanitize_text_field(wp_unslash($_GET['ord'])) : 'event_desc';
 
 /**
  * URL canonico dell’archivio del CPT.
@@ -64,12 +64,12 @@ $archive_url = get_post_type_archive_link('progetto');
               <select class="form-select" id="beneficiario" name="beneficiario">
                 <option value="">&lt;qualsiasi&gt;</option>
                 <?php
-                $avz_values = ['Buseto Palizzolo', 'Valderice', 'Erice', 'Trapani', 'Paceco', 'Misiliscemi', 'Marsala', 'Petrosino', 'Mazara', 'Campobello di Mazara', 'Castelvetrano'];
-                foreach ($avz_values as $v) {
+                $values = ['Buseto Palizzolo', 'Valderice', 'Erice', 'Trapani', 'Paceco', 'Misiliscemi', 'Marsala', 'Petrosino', 'Mazara', 'Campobello di Mazara', 'Castelvetrano'];
+                foreach ($values as $v) {
                   printf(
                     '<option value="%s"%s>%s</option>',
                     esc_attr($v),
-                    selected($benef, $v, false),
+                    selected($beneficiario, $v, false),
                     esc_html($v)
                   );
                 }
@@ -84,12 +84,12 @@ $archive_url = get_post_type_archive_link('progetto');
                 <option value="">&lt;qualsiasi&gt;</option>
                 <?php
                 // Valori indicati nell’istruzione del campo ACF "avanzamento" (vedi export JSON)
-                $avz_values = ['Proposto','Approvato','In corso di verifica','Avviato','Avanzato','Concluso','Inaugurato'];
-                foreach ($avz_values as $v) {
+                $values = ['Proposto','Approvato','In corso di verifica','Avviato','Avanzato','Concluso','Inaugurato'];
+                foreach ($values as $v) {
                   printf(
                     '<option value="%s"%s>%s</option>',
                     esc_attr($v),
-                    selected($avz, $v, false),
+                    selected($avanzamento, $v, false),
                     esc_html($v)
                   );
                 }
