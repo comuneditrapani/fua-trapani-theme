@@ -2,7 +2,7 @@
   global $luogo_id;
   $luogo = get_post( $luogo_id );
   $img = dci_get_meta('immagine', '_dci_luogo_', $luogo->ID);
-  
+
 ?>
 <div class="col-lg-4 col-xl-2">
   <div class="card-wrapper shadow-sm rounded border border-light">
