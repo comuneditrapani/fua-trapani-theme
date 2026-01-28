@@ -1,7 +1,7 @@
 /**
  * Theme Name: Design Comuni Wordpress theme child
  * Template:   design-comuni-wordpress-theme
- * 
+ *
  * ...other header fields
  */
 
@@ -13,98 +13,103 @@
 }
 
 main {
-	background-color: #ebeef0;
+    background-color: #ebeef0;
 }
 
 .card-body {
-	background-color: #ebeef0;
+    background-color: #ebeef0;
 }
 
 .card-wrapper {
-	background-color: #ebeef0;
+    background-color: #ebeef0;
 }
 
 .bg-white {
-	background-color: #ebeef0 !important;
+    background-color: #ebeef0 !important;
 }
 
 body {
-	color: #14110f;
-	background: #121200;
-	
+    color: #14110f;
+    background: #121200;
+
 }
 
 .it-header-center-wrapper {
-	background: #912c27;
+    background: #912c27;
 }
 
 body {
-	background: #921200;
+    background: #921200;
 }
 
 .it-brand-title {
-	font-size: 1em;
+    font-size: 1em;
 }
 
 .it-header-navbar-wrapper
 {
-	background: #912c27;
+    background: #912c27;
 }
 .it-header-center-wrapper
 {
-	background: #912c27;
+    background: #912c27;
 }
 .navbar {
-	background: #912c27;
+    background: #912c27;
 }
 .it-carousel-wrapper
 {
-	background: #912c27;
+    background: #912c27;
 }
 .it-header-block
 {
-	background: #912c27;
+    background: #912c27;
 }
 .home-carousel-title
 {
-	background: #912c27;
+    background: #912c27;
 }
 .it-header-block-title
 {
-	background-color: #912c27 !important ;
+    background-color: #912c27 !important ;
 }
 .it-calendar-wrapper
 {
-	background: #912c27;
+    background: #912c27;
 }
 .it-header-slim-wrapper
 {
-	background: #7a1510;
+    background: #7a1510;
 }
 .btn-primary
 {
-	background-color: #7a1510;
+    background-color: #7a1510;
 }
 .btn-primary:hover
 {
-	background-color: #68100d;
+    background-color: #68100d;
 }
 .bg-primary
 {
-	/*--bs-primary-rgb: #7a1510;*/
-	background-color: #7a1510 !important;
+    /*--bs-primary-rgb: #7a1510;*/
+    background-color: #7a1510 !important;
 }
 
 .it-header-slim-right-zone
 {
-	background: #7a1510 !important;
+    background: #7a1510 !important;
 }
 .it-user-wrapper.nav-item.dropdown
 {
-	background: #7a1510 !important;
+    background: #7a1510 !important;
 }
 
 .accordion-header
 {
     padding-left: 12px;
+}
+
+.leaflet-container .leaflet-control-attribution
+{
+    display: block;
 }
