@@ -30,7 +30,20 @@ get_header();
     $struttura_responsabile = dci_get_meta("struttura_responsabile", $prefix, $post->ID);
     $ulteriori_informazioni = dci_get_wysiwyg_field("ulteriori_informazioni", $prefix, $post->ID);
 
-    ?>
+    // conta quanti progetti hanno questo luogo come beneficiario
+    global $wpdb;
+    $sql_prepared = $wpdb->prepare(
+        "SELECT COUNT(*)
+    FROM $wpdb->postmeta
+    WHERE meta_key = 'beneficiario'
+    AND meta_value = %s",
+        get_the_title()
+    );
+    $count_progetti = $wpdb->get_var($sql_prepared);
+
+    $progetti_collegati_url = get_site_url()."/progetti/?q=&beneficiario=".get_the_title()."&avanzamento=&ord=event_desc";
+
+  ?>
 
     <div class="container px-4 my-4" id="main-container">
       <div class="row">
@@ -88,6 +101,11 @@ get_header();
                                             <div class="accordion-body">
                                                 <ul class="link-list" data-element="page-index">
                                                     <li class="nav-item">
+                                                    <a class="nav-link" href="#progetti-collegati">
+                                                    <span>Progetti collegati</span>
+                                                    </a>
+                                                    </li>
+                                                    <li class="nav-item">
                                                     <a class="nav-link" href="#descrizione-estesa">
                                                     <span>Descrizione</span>
                                                     </a>
@@ -140,7 +158,19 @@ get_header();
         </aside>
 
         <section class="col-lg-8 it-page-sections-container border-light">
-          <article id="cos-e" class="it-page-section mb-5" data-audio>
+          <article id="progetti-collegati" class="it-page-section mb-5" "data-audio">
+            <?php if($count_progetti == 0) { ?>
+            Non sono presenti progetti collegati a <?= get_the_title() ?>
+            <?php } else { ?>
+            <a href="<?= $progetti_collegati_url ?>">
+              <button class="btn btn-primary">
+                Visualizza <?= $count_progetti ?> progetti collegati
+              </button>
+            </a>
+            <?php } ?>
+          </article>
+
+          <article id="descrizione-estesa" class="it-page-section mb-5" "data-audio">
               <h2 class="mb-3">Descrizione</h2>
               <div class="richtext-wrapper font-serif">
                   <?php echo $descrizione_estesa; ?>
