@@ -363,6 +363,7 @@ add_action('pre_get_posts', function ($query) {
   }
   $query->set('order', $order);
 
+  $query->set('posts_per_page', 6);
 
 }, 30); // priority 30: per farlo girare dopo altri eventuali filtri tema/plugin
 
