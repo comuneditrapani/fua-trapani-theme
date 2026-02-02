@@ -32,7 +32,7 @@ $schede = dci_get_option('schede_evidenziate', 'homepage') ?? null;
 $overlapping = "";
 ?>
 <!-- Tag section is opened in home.php -->
-<section id="notizie" aria-describedby="novita-in-evidenza">
+<section id="notizie" aria-describedby="novita-in-evidenza" style="background-color: var(--bs-gray-100);">
     <div class="section-content">
         <div class="container">
             <h2 id="novita-in-evidenza" class="visually-hidden">Novità in evidenza</h2>
@@ -95,7 +95,7 @@ $overlapping = "";
              */
             if ($posts && is_array($posts) && count($posts) > 0) { ?>
 
-                <div class="mt-5 py-4 px-0" style="background-color: var(--bs-gray-100);">
+                <div class="mt-5 py-4 px-0" >
                     <?php
                     /**
                      * Se non c'è "post in evidenza" ($post_id è vuoto),
