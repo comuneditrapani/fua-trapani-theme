@@ -33,6 +33,7 @@ $overlapping = "";
 ?>
 <!-- Tag section is opened in home.php -->
 <section id="notizie" aria-describedby="novita-in-evidenza">
+	<div class="bg-grey-card">
     <div class="section-content">
         <div class="container">
             <h2 id="novita-in-evidenza" class="visually-hidden">Novità in evidenza</h2>
@@ -103,4 +104,5 @@ $overlapping = "";
             <?php } ?>
         </div>
     </div>
+	</div>
 </section>
