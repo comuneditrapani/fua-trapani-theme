@@ -189,10 +189,9 @@ $archive_url = get_post_type_archive_link('progetto');
           </div>
 
           <div class="mt-4">
-            <?php // the_posts_pagination(); ?>
 			<nav class="pagination-wrapper justify-content-center col-12">
-								<?php echo dci_bootstrap_pagination(); ?>
-                            </nav>
+				<?php echo dci_bootstrap_pagination(); ?>
+            </nav>
           </div>
 
         <?php else : ?>
