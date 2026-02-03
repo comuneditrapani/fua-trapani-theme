@@ -234,136 +234,138 @@ add_action('acf/save_post', function ($post_id) {
  * - modifica la main query dell’archivio CPT
  *
  * Usiamo pre_get_posts perché è l’hook standard per modificare la query principale
- * prima che WordPress generi la SQL. 
+ * prima che WordPress generi la SQL.
  */
 add_action('pre_get_posts', function ($query) {
 
-  // Non tocchiamo admin e query secondarie
-  if (is_admin() || !$query->is_main_query()) {
-    return;
-  }
 
-  // Interveniamo SOLO sull’archivio del CPT "progetto"
-  if (!is_post_type_archive('progetto')) {
-    return;
-  }
-  
-  // -------------------------------------------------------------------
-  // DEFAULT: nessun filtro applicato => mostra TUTTI i progetti
-  // -------------------------------------------------------------------
-  // Se non arriva nessun parametro dal form, NON tocchiamo la query.
-  // In questo modo l'archivio si comporta come un normale archive (tutti i post).
-  $has_filters =
-    (!empty($_GET['q'])) ||
-    (!empty($_GET['beneficiario'])) ||
-    (!empty($_GET['avanzamento'])) ||
-    (!empty($_GET['ord']));
-
-  if (!$has_filters) {
-    return;
-  }
-
-  /**
-   * Costruiamo una meta_query:
-   * - relation AND globale (tutti i filtri devono valere)
-   * - una sotto-query OR per la ricerca libera (q) sui campi ACF
-   *
-   * NOTA: meta_query con molti LIKE può pesare sul DB se i record sono tanti.
-   * Se crescono molto i progetti, valutare indicizzazione/soluzioni dedicate.
-   */
-  $meta_query = ['relation' => 'AND'];
-
-  // -------------------------
-  // Filtro: beneficiario
-  // -------------------------
-  if (!empty($_GET['beneficiario'])) {
-    $meta_query[] = [
-      'key'     => 'beneficiario',
-      'value'   => sanitize_text_field(wp_unslash($_GET['beneficiario'])),
-      'compare' => '=',
-    ];
-  }
-
-  // -------------------------
-  // Filtro: avanzamento
-  // -------------------------
-  if (!empty($_GET['avanzamento'])) {
-    $meta_query[] = [
-      'key'     => 'avanzamento',
-      'value'   => sanitize_text_field(wp_unslash($_GET['avanzamento'])),
-      'compare' => 'LIKE',
-    ];
-  }
-
-  // -------------------------
-  // Ricerca libera: q su campi ACF (Progetto)
-  // -------------------------
-  if (!empty($_GET['q'])) {
-    $term = sanitize_text_field(wp_unslash($_GET['q']));
-
-    /**
-     * Lista dei field name ACF su cui cerchiamo (dal tuo export JSON "Campi di Progetto")
-     * Includiamo sia text che textarea; includiamo anche rif_comune (number) perché spesso
-     * l’utente può voler cercare un codice/protocollo.
-     *
-     * Limite solo ai campi testuali.
-     */
-    $acf_keys_search = [
-      'titolo',
-      'descrizione',
-      'beneficiario',
-      'rif_comune',
-      'azione_st',
-      'azione_pr_fesr',
-      'obiettivo_specifico',
-      'azione_di_riferimento',
-      'settore_dintervento',
-      'importo_intervento',
-      'cup',
-      'avanzamento',
-    ];
-
-    // Sotto query OR: basta che il termine compaia in almeno uno dei campi
-    $sub = ['relation' => 'OR'];
-    foreach ($acf_keys_search as $k) {
-      $sub[] = [
-        'key'     => $k,
-        'value'   => $term,
-        'compare' => 'LIKE',
-      ];
+    // Interveniamo SOLO sull’archivio del CPT "progetto"
+    if (!is_post_type_archive('progetto')) {
+        return;
     }
 
-    $meta_query[] = $sub;
-  }
+    // Non tocchiamo admin e query secondarie
+    if (is_admin() || !$query->is_main_query()) {
+        return;
+    }
 
-  // Applica meta_query solo se abbiamo almeno un filtro/ricerca
-  if (count($meta_query) > 1) {
-    $query->set('meta_query', $meta_query);
-  }
+    // comunque vogliamo 6 post per page
+    $query->set('posts_per_page', 6);
 
-  /**
-   * -------------------------
-   * ORDINAMENTO
-   * -------------------------
-   * ord può essere:
-   * - event_desc: per _last_event_date_ymd DESC (senza data = 0 => in coda)
-   * - event_asc:  per _last_event_date_ymd ASC (senza data = 0 => in testa)
-   * - title_asc / title_desc
-   */
-  $ord = isset($_GET['ord']) ? sanitize_text_field(wp_unslash($_GET['ord'])) : 'event_desc';
+    // -------------------------------------------------------------------
+    // DEFAULT: nessun filtro applicato => mostra TUTTI i progetti
+    // -------------------------------------------------------------------
+    // Se non arriva nessun parametro dal form, NON tocchiamo la query.
+    // In questo modo l'archivio si comporta come un normale archive (tutti i post).
+    $has_filters =
+        (!empty($_GET['q'])) ||
+        (!empty($_GET['beneficiario'])) ||
+        (!empty($_GET['avanzamento'])) ||
+        (!empty($_GET['ord']));
 
-  list($field, $order) = explode("_", $ord);
+    if (!$has_filters) {
+        return;
+    }
 
-  if ($field === 'title') {
-    $query->set('orderby', 'title');
-  } else {
-    // ordinamento per data evento
-    $query->set('meta_key', '_last_event_date_ymd');
-    $query->set('orderby', 'meta_value_num');
-  }
-  $query->set('order', $order);
+    /**
+     * Costruiamo una meta_query:
+     * - relation AND globale (tutti i filtri devono valere)
+     * - una sotto-query OR per la ricerca libera (q) sui campi ACF
+     *
+     * NOTA: meta_query con molti LIKE può pesare sul DB se i record sono tanti.
+     * Se crescono molto i progetti, valutare indicizzazione/soluzioni dedicate.
+     */
+    $meta_query = ['relation' => 'AND'];
 
-  $query->set('posts_per_page', 6);
+    // -------------------------
+    // Filtro: beneficiario
+    // -------------------------
+    if (!empty($_GET['beneficiario'])) {
+        $meta_query[] = [
+            'key'     => 'beneficiario',
+            'value'   => sanitize_text_field(wp_unslash($_GET['beneficiario'])),
+            'compare' => '=',
+        ];
+    }
+
+    // -------------------------
+    // Filtro: avanzamento
+    // -------------------------
+    if (!empty($_GET['avanzamento'])) {
+        $meta_query[] = [
+            'key'     => 'avanzamento',
+            'value'   => sanitize_text_field(wp_unslash($_GET['avanzamento'])),
+            'compare' => 'LIKE',
+        ];
+    }
+
+    // -------------------------
+    // Ricerca libera: q su campi ACF (Progetto)
+    // -------------------------
+    if (!empty($_GET['q'])) {
+        $term = sanitize_text_field(wp_unslash($_GET['q']));
+
+        /**
+         * Lista dei field name ACF su cui cerchiamo (dal tuo export JSON "Campi di Progetto")
+         * Includiamo sia text che textarea; includiamo anche rif_comune (number) perché spesso
+         * l’utente può voler cercare un codice/protocollo.
+         *
+         * Limite solo ai campi testuali.
+         */
+        $acf_keys_search = [
+            'titolo',
+            'descrizione',
+            'beneficiario',
+            'rif_comune',
+            'azione_st',
+            'azione_pr_fesr',
+            'obiettivo_specifico',
+            'azione_di_riferimento',
+            'settore_dintervento',
+            'importo_intervento',
+            'cup',
+            'avanzamento',
+        ];
+
+        // Sotto query OR: basta che il termine compaia in almeno uno dei campi
+        $sub = ['relation' => 'OR'];
+        foreach ($acf_keys_search as $k) {
+            $sub[] = [
+                'key'     => $k,
+                'value'   => $term,
+                'compare' => 'LIKE',
+            ];
+        }
+
+        $meta_query[] = $sub;
+    }
+
+    // Applica meta_query solo se abbiamo almeno un filtro/ricerca
+    if (count($meta_query) > 1) {
+        $query->set('meta_query', $meta_query);
+    }
+
+    /**
+     * -------------------------
+     * ORDINAMENTO
+     * -------------------------
+     * ord può essere:
+     * - event_desc: per _last_event_date_ymd DESC (senza data = 0 => in coda)
+     * - event_asc:  per _last_event_date_ymd ASC (senza data = 0 => in testa)
+     * - title_asc / title_desc
+     */
+    $ord = isset($_GET['ord']) ? sanitize_text_field(wp_unslash($_GET['ord'])) : 'event_desc';
+
+    list($field, $order) = explode("_", $ord);
+
+    if ($field === 'title') {
+        $query->set('orderby', 'title');
+    } else {
+        // ordinamento per data evento
+        $query->set('meta_key', '_last_event_date_ymd');
+        $query->set('orderby', 'meta_value_num');
+    }
+    $query->set('order', $order);
 
 }, 30); // priority 30: per farlo girare dopo altri eventuali filtri tema/plugin
 
