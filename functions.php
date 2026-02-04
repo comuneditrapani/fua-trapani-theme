@@ -484,6 +484,29 @@ add_action('acf/save_post', function ($post_id) {
 }, 99, 2);
 
 
+//Riproviamo a ricostruire i breadcrums della pagina di un singolo comune-fua
+add_filter('breadcrumb_trail_items', function ($items, $args) {
+
+  // Quando sei nel singolo "Luogo"
+  if ( is_singular('luogo') || is_singular('luoghi') ) {
+
+    $label = 'Comuni FUA';
+
+    // Item NON cliccabile: niente <a>, solo testo
+    $crumb_html = sprintf(
+      '<li class="breadcrumb-item">%s</li>',
+      esc_html($label)
+    );
+
+    // Inserisci dopo Home (posizione 1)
+    array_splice($items, 1, 0, [$crumb_html]);
+  }
+
+  return $items;
+}, 10, 2);
+
+
+
 
 
 ?>
