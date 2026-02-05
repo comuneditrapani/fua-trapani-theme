@@ -483,13 +483,16 @@ add_filter('register_post_type_args', function ($args, $post_type) {
 }, 99, 2);
 
 
-//Riproviamo a ricostruire i breadcrums della pagina di un singolo comune-fua
+/**
+ * corregge il breadcrums trail della pagina di un singolo comune-fua.
+ *
+ * aggiunge l'elemento Comuni FUA, che riporta alla home.
+ */
+
 add_filter('breadcrumb_trail_items', function ($items) {
     // Quando sei nel singolo "Luogo"
-    if ( is_singular('luogo') || is_singular('luoghi') ) {
-
+    if ( is_singular('luogo') ) {
         $label = 'Comuni FUA';
-
         // Item NON cliccabile: niente <a>, solo testo
         $crumb_html = sprintf(
             '<li class="breadcrumb-item"><a href="%s">%s</a></li>',
