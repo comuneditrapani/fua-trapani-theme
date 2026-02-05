@@ -172,7 +172,7 @@ get_header();
 
           <article id="descrizione-estesa" class="it-page-section mb-5" "data-audio">
               <h2 class="mb-3">Descrizione</h2>
-              <div class="richtext-wrapper font-serif">
+              <div class="richtext-wrapper">
                   <?php echo $descrizione_estesa; ?>
               </div>
           </article>
@@ -193,7 +193,7 @@ get_header();
           <?php if($servizi) {?>
           <article id="servizi" class="it-page-section mb-5">
             <h2 class="mb-3">Servizi</h2>
-            <div class="richtext-wrapper font-serif">
+            <div class="richtext-wrapper">
                 <?php echo $servizi; ?>
             </div>
           </article>
@@ -206,7 +206,7 @@ get_header();
                 $luoghi = array($luogo);
                 get_template_part("template-parts/luogo/map");
             ?>
-            <div class="richtext-wrapper font-serif mt-3">
+            <div class="richtext-wrapper mt-3">
                 <?php echo $indirizzo; ?>
             </div>
           </article>
@@ -215,7 +215,7 @@ get_header();
           <?php if($orario_pubblico) {?>
           <article id="orario-pubblico" class="it-page-section mb-5">
             <h2 class="mb-3">Orario per il pubblico</h2>
-            <div class="richtext-wrapper font-serif">
+            <div class="richtext-wrapper">
                 <?php echo $orario_pubblico; ?>
             </div>
           </article>
