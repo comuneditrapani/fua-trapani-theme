@@ -57,7 +57,7 @@ if ($importo_intervento !== '') {
 
         <?php if (have_posts()) : while (have_posts()) : the_post(); ?>
           <?php if (trim(get_the_content())) : ?>
-            <div class="richtext-wrapper lora mb-4">
+            <div class="richtext-wrapper mb-4">
               <?php the_content(); ?>
             </div>
           <?php endif; ?>
