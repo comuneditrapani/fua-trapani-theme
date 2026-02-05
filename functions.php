@@ -465,18 +465,17 @@ add_action('acf/save_post', function ($post_id) {
 
 
 /**
- * TENTO DI MODIFICARE LA URL eliminando la parte 'vivere-il-comune' utilizzando la funzione di rewrite.
- * Non resco a capire se lo slug del custom post type si chiama 'luogo' oppure 'luoghi' quindi eseguo il controllo su entrambi
- * Usando with_front => false, si evita che si aggiunga vivere-il-comune/ davanti
- * 2 = numero di argomenti da ricevere nella callback ($args e $post_type)
- *     poichè spesso riceve solo $args e quindi non funzionerebbe il filtro per post type.
+ * riscrivo la URL, invece di 'vivere-il-comune/luoghi' diventa 'comuni-fua'
+ *
+ * nota quel 2 come 4o parametro alla add_filter: è il numero di
+ *      argomenti accettati dalla callback ($args e $post_type).  Se
+ *      omesso vale 1, e la callback non riceverebbe il post_type.
  */
 
 add_filter('register_post_type_args', function ($args, $post_type) {
-    if ($post_type === 'luogo' || $post_type === 'luoghi') {
-        $rewrite = (isset($args['rewrite']) && is_array($args['rewrite'])) ? $args['rewrite'] : [];
+    if ($post_type === 'luogo') {
+        $rewrite = $args['rewrite'] ?? [];
         $rewrite['slug'] = 'comuni-fua';
-        $rewrite['with_front'] = false;
         $args['rewrite'] = $rewrite;
     }
 
