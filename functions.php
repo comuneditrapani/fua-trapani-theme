@@ -458,7 +458,8 @@ add_action('acf/save_post', function ($post_id) {
         }
         update_post_meta($pid, '_last_event_date_ymd', $max_ymd);
     }  // Pulizia
-    wp_reset_postdata();}, 30); // priority 30: dopo che ACF ha salvato i campi dell'evento [web:263]
+    wp_reset_postdata();
+}, 30); // priority 30: dopo che ACF ha salvato i campi dell'evento [web:263]
 
 
 
