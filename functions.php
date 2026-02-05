@@ -23,7 +23,7 @@
   per qualche motivo dobbiamo scrivere questo filtro, selezionando in
   base al campo post_type, ma ci sarà modo di scriverlo nella base
   dati? in modo che l'abbinamento non sia programmatico?
- */
+*/
 add_filter('single_template', function($single) {
     global $post;
     if ($post->post_type == 'unita_organizzativa') {
@@ -76,25 +76,25 @@ add_action('wp_enqueue_scripts',
  */
 add_filter('register_post_type_args', function ($args, $post_type) {
 
-  // Interveniamo SOLO sul CPT interessato
-  if ($post_type !== 'progetto') {
+    // Interveniamo SOLO sul CPT interessato
+    if ($post_type !== 'progetto') {
+        return $args;
+    }
+
+    // Abilita l’archivio del CPT (template: archive-progetto.php)
+    $args['has_archive'] = true;
+
+    // Imposta lo slug dell’archivio (URL listing): /progetti/
+    $args['rewrite'] = [
+        'slug'       => 'progetti',
+        'with_front' => false,
+    ];
+
+    // (Opzionale, ma utile) rende il CPT pubblico e queryable
+    $args['public']             = true;
+    $args['publicly_queryable'] = true;
+
     return $args;
-  }
-
-  // Abilita l’archivio del CPT (template: archive-progetto.php)
-  $args['has_archive'] = true;
-
-  // Imposta lo slug dell’archivio (URL listing): /progetti/
-  $args['rewrite'] = [
-    'slug'       => 'progetti',
-    'with_front' => false,
-  ];
-
-  // (Opzionale, ma utile) rende il CPT pubblico e queryable
-  $args['public']             = true;
-  $args['publicly_queryable'] = true;
-
-  return $args;
 
 }, 20, 2); // 20 = priorità: dopo i filtri standard (default 10)
 
@@ -114,29 +114,29 @@ add_filter('register_post_type_args', function ($args, $post_type) {
  */
 add_filter('breadcrumb_trail_items', function ($items) {
 
-  // Applica SOLO nell’archivio del CPT "progetto"
-  if (!is_post_type_archive('progetto')) {
+    // Applica SOLO nell’archivio del CPT "progetto"
+    if (!is_post_type_archive('progetto')) {
+        return $items;
+    }
+
+    // Sicurezza: ci servono almeno 3 elementi (Home, Archivio, Active)
+    if (!is_array($items) || count($items) < 3) {
+        return $items;
+    }
+
+    $last = count($items) - 1;
+
+    // Confrontiamo il testo (senza HTML) degli ultimi due elementi
+    $txt_last = trim(wp_strip_all_tags($items[$last]));      // ultimo (active)
+    $txt_prev = trim(wp_strip_all_tags($items[$last - 1]));  // penultimo (link)
+
+    // Se sono uguali, elimina il penultimo (link) e tieni l’ultimo (testo)
+    if ($txt_last !== '' && $txt_last === $txt_prev) {
+        unset($items[$last - 1]);
+        $items = array_values($items);
+    }
+
     return $items;
-  }
-
-  // Sicurezza: ci servono almeno 3 elementi (Home, Archivio, Active)
-  if (!is_array($items) || count($items) < 3) {
-    return $items;
-  }
-
-  $last = count($items) - 1;
-
-  // Confrontiamo il testo (senza HTML) degli ultimi due elementi
-  $txt_last = trim(wp_strip_all_tags($items[$last]));      // ultimo (active)
-  $txt_prev = trim(wp_strip_all_tags($items[$last - 1]));  // penultimo (link)
-
-  // Se sono uguali, elimina il penultimo (link) e tieni l’ultimo (testo)
-  if ($txt_last !== '' && $txt_last === $txt_prev) {
-    unset($items[$last - 1]);
-    $items = array_values($items);
-  }
-
-  return $items;
 
 }, 20);
 
@@ -168,60 +168,60 @@ add_filter('breadcrumb_trail_items', function ($items) {
  */
 add_action('acf/save_post', function ($post_id) {
 
-  // ACF può chiamare questo hook anche per options, user, ecc.
-  // Noi vogliamo solo i post reali.
-  if (!is_numeric($post_id)) {
-    return;
-  }
+    // ACF può chiamare questo hook anche per options, user, ecc.
+    // Noi vogliamo solo i post reali.
+    if (!is_numeric($post_id)) {
+        return;
+    }
 
-  $post_id = (int) $post_id;
+    $post_id = (int) $post_id;
 
-  // Interveniamo solo sui Progetti
-  if (get_post_type($post_id) !== 'progetto') {
-    return;
-  }
-
-  /**
-   * Field ACF "articoli" (post_object multiplo, return_format ID)
-   * Contiene gli ID degli eventi collegati (post_type: evento-progetto)
-   */
-  $event_ids = get_field('articoli', $post_id);
-
-  // Nessun evento collegato => data = 0
-  if (empty($event_ids) || !is_array($event_ids)) {
-    update_post_meta($post_id, '_last_event_date_ymd', 0);
-    return;
-  }
-
-  $max_ymd = 0;
-
-  foreach ($event_ids as $eid) {
-    $eid = (int) $eid;
+    // Interveniamo solo sui Progetti
+    if (get_post_type($post_id) !== 'progetto') {
+        return;
+    }
 
     /**
-     * Campo ACF "data" sull'evento:
-     * - type: date_picker
-     * - return_format: d/m/Y (dal tuo JSON export)
+     * Field ACF "articoli" (post_object multiplo, return_format ID)
+     * Contiene gli ID degli eventi collegati (post_type: evento-progetto)
      */
-    $d = get_field('data', $eid);
-    if (empty($d)) {
-      continue;
+    $event_ids = get_field('articoli', $post_id);
+
+    // Nessun evento collegato => data = 0
+    if (empty($event_ids) || !is_array($event_ids)) {
+        update_post_meta($post_id, '_last_event_date_ymd', 0);
+        return;
     }
 
-    // Converte "d/m/Y" in DateTime
-    $dt = date_create_from_format('d/m/Y', $d);
-    if (!$dt) {
-      continue;
+    $max_ymd = 0;
+
+    foreach ($event_ids as $eid) {
+        $eid = (int) $eid;
+
+        /**
+         * Campo ACF "data" sull'evento:
+         * - type: date_picker
+         * - return_format: d/m/Y (dal tuo JSON export)
+         */
+        $d = get_field('data', $eid);
+        if (empty($d)) {
+            continue;
+        }
+
+        // Converte "d/m/Y" in DateTime
+        $dt = date_create_from_format('d/m/Y', $d);
+        if (!$dt) {
+            continue;
+        }
+
+        // Converte in YYYYMMDD (numerico) per ordinare facilmente
+        $ymd = (int) $dt->format('Ymd');
+        if ($ymd > $max_ymd) {
+            $max_ymd = $ymd;
+        }
     }
 
-    // Converte in YYYYMMDD (numerico) per ordinare facilmente
-    $ymd = (int) $dt->format('Ymd');
-    if ($ymd > $max_ymd) {
-      $max_ymd = $ymd;
-    }
-  }
-
-  update_post_meta($post_id, '_last_event_date_ymd', $max_ymd);
+    update_post_meta($post_id, '_last_event_date_ymd', $max_ymd);
 
 }, 20); // priority 20: dopo che ACF ha salvato i campi
 
@@ -392,85 +392,85 @@ add_action('pre_get_posts', function ($query) {
  *   dalla documentazione ACF. [web:327]
  */
 add_action('acf/save_post', function ($post_id) {
-  // ACF può passare anche valori non numerici (es. "options")
-  if (!is_numeric($post_id)) {
-    return;
-  }  $event_id = (int) $post_id;
+    // ACF può passare anche valori non numerici (es. "options")
+    if (!is_numeric($post_id)) {
+        return;
+    }  $event_id = (int) $post_id;
 
-  // Interveniamo SOLO quando viene salvato un "evento-progetto"
-  if (get_post_type($event_id) !== 'evento-progetto') {
-    return;
-  }
-
-  /**
-   * 1) Trova i Progetti che contengono questo evento nel campo 'articoli'
-   *    (field ACF sul CPT "progetto").
-   *
-   * Usa LIKE su valore con virgolette per matchare l'elemento nell'array serializzato:
-   * esempio: a:2:{i:0;s:2:"35";i:1;s:2:"99";}
-   */
-  $q = new WP_Query([
-    'post_type'      => 'progetto',
-    'post_status'    => 'any',   // oppure 'publish' se vuoi aggiornare solo i pubblicati
-    'posts_per_page' => -1,
-    'fields'         => 'ids',   // ottimizzazione: ci servono solo gli ID
-    'no_found_rows'  => true,    // ottimizzazione: niente paginazione
-    'meta_query'     => [
-      [
-        'key'     => 'articoli',
-        'value'   => '"' . $event_id . '"', // IMPORTANTISSIMO: ID tra virgolette
-        'compare' => 'LIKE',
-      ],
-    ],
-  ]);
-
-  if (empty($q->posts)) {
-    return; // nessun progetto referenzia questo evento
-  }
-
-  /**
-   * 2) Per ogni progetto trovato, ricalcoliamo _last_event_date_ymd
-   *    con la stessa logica usata nel salvataggio del progetto.
-   *
-   * NB: qui NON chiamiamo wp_update_post() (evitiamo loop di salvataggi),
-   *     ma aggiorniamo solo post meta.
-   */
-  foreach ($q->posts as $pid) {
-    $pid = (int) $pid;
-    // Legge gli eventi collegati dal progetto (field ACF 'articoli')
-    $event_ids = get_field('articoli', $pid);
-    $max_ymd = 0;
-    foreach ($event_ids as $eid) {
-      $eid = (int) $eid;
-      // Campo ACF 'data' sul CPT 'evento-progetto' (return_format d/m/Y)
-      $d = get_field('data', $eid);
-      if (empty($d)) {
-        continue;
-      }
-      $dt = date_create_from_format('d/m/Y', $d);
-      if (!$dt) {
-        continue;
-      }
-      $ymd = (int) $dt->format('Ymd');
-      if ($ymd > $max_ymd) {
-        $max_ymd = $ymd;
-      }
+    // Interveniamo SOLO quando viene salvato un "evento-progetto"
+    if (get_post_type($event_id) !== 'evento-progetto') {
+        return;
     }
-    update_post_meta($pid, '_last_event_date_ymd', $max_ymd);
-  }  // Pulizia
-  wp_reset_postdata();}, 30); // priority 30: dopo che ACF ha salvato i campi dell'evento [web:263]
+
+    /**
+     * 1) Trova i Progetti che contengono questo evento nel campo 'articoli'
+     *    (field ACF sul CPT "progetto").
+     *
+     * Usa LIKE su valore con virgolette per matchare l'elemento nell'array serializzato:
+     * esempio: a:2:{i:0;s:2:"35";i:1;s:2:"99";}
+     */
+    $q = new WP_Query([
+        'post_type'      => 'progetto',
+        'post_status'    => 'any',   // oppure 'publish' se vuoi aggiornare solo i pubblicati
+        'posts_per_page' => -1,
+        'fields'         => 'ids',   // ottimizzazione: ci servono solo gli ID
+        'no_found_rows'  => true,    // ottimizzazione: niente paginazione
+        'meta_query'     => [
+            [
+                'key'     => 'articoli',
+                'value'   => '"' . $event_id . '"', // IMPORTANTISSIMO: ID tra virgolette
+                'compare' => 'LIKE',
+            ],
+        ],
+    ]);
+
+    if (empty($q->posts)) {
+        return; // nessun progetto referenzia questo evento
+    }
+
+    /**
+     * 2) Per ogni progetto trovato, ricalcoliamo _last_event_date_ymd
+     *    con la stessa logica usata nel salvataggio del progetto.
+     *
+     * NB: qui NON chiamiamo wp_update_post() (evitiamo loop di salvataggi),
+     *     ma aggiorniamo solo post meta.
+     */
+    foreach ($q->posts as $pid) {
+        $pid = (int) $pid;
+        // Legge gli eventi collegati dal progetto (field ACF 'articoli')
+        $event_ids = get_field('articoli', $pid);
+        $max_ymd = 0;
+        foreach ($event_ids as $eid) {
+            $eid = (int) $eid;
+            // Campo ACF 'data' sul CPT 'evento-progetto' (return_format d/m/Y)
+            $d = get_field('data', $eid);
+            if (empty($d)) {
+                continue;
+            }
+            $dt = date_create_from_format('d/m/Y', $d);
+            if (!$dt) {
+                continue;
+            }
+            $ymd = (int) $dt->format('Ymd');
+            if ($ymd > $max_ymd) {
+                $max_ymd = $ymd;
+            }
+        }
+        update_post_meta($pid, '_last_event_date_ymd', $max_ymd);
+    }  // Pulizia
+    wp_reset_postdata();}, 30); // priority 30: dopo che ACF ha salvato i campi dell'evento [web:263]
 
 
 
 
 
-  /**
-  * TENTO DI MODIFICARE LA URL eliminando la parte 'vivere-il-comune' utilizzando la funzione di rewrite.
-  * Non resco a capire se lo slug del custom post type si chiama 'luogo' oppure 'luoghi' quindi eseguo il controllo su entrambi
-  * Usando with_front => false, si evita che si aggiunga vivere-il-comune/ davanti
-  * 2 = numero di argomenti da ricevere nella callback ($args e $post_type)
-  *     poichè spesso riceve solo $args e quindi non funzionerebbe il filtro per post type.
-  */
+/**
+ * TENTO DI MODIFICARE LA URL eliminando la parte 'vivere-il-comune' utilizzando la funzione di rewrite.
+ * Non resco a capire se lo slug del custom post type si chiama 'luogo' oppure 'luoghi' quindi eseguo il controllo su entrambi
+ * Usando with_front => false, si evita che si aggiunga vivere-il-comune/ davanti
+ * 2 = numero di argomenti da ricevere nella callback ($args e $post_type)
+ *     poichè spesso riceve solo $args e quindi non funzionerebbe il filtro per post type.
+ */
 
 add_filter('register_post_type_args', function ($args, $post_type) {
     if ($post_type === 'luogo' || $post_type === 'luoghi') {
