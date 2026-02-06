@@ -64,7 +64,7 @@ $archive_url = get_post_type_archive_link('progetto');
               <select class="form-select" id="beneficiario" name="beneficiario">
                 <option value="">&lt;qualsiasi&gt;</option>
                 <?php
-                $values = ['Buseto Palizzolo', 'Valderice', 'Erice', 'Trapani', 'Paceco', 'Misiliscemi', 'Marsala', 'Petrosino', 'Mazara', 'Campobello di Mazara', 'Castelvetrano'];
+                $values = ['Buseto Palizzolo', 'Valderice', 'Erice', 'Trapani', 'Paceco', 'Misiliscemi', 'Marsala', 'Petrosino', 'Mazara del Vallo', 'Campobello di Mazara', 'Castelvetrano'];
                 foreach ($values as $v) {
                   printf(
                     '<option value="%s"%s>%s</option>',
