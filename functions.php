@@ -475,7 +475,7 @@ add_action('acf/save_post', function ($post_id) {
  *      omesso vale 1, e la callback non riceverebbe il post_type.
  */
 
- add_filter('register_post_type_args', function ($args, $post_type) {
+add_filter('register_post_type_args', function ($args, $post_type) {
     if ($post_type === 'luogo') {
         $rewrite = $args['rewrite'] ?? [];
         $rewrite['slug'] = 'comuni-fua';
@@ -483,9 +483,27 @@ add_action('acf/save_post', function ($post_id) {
     }
 
     return $args;
-}, 99, 2); 
+}, 99, 2);
 
+/**
+ * Pagina "Luoghi" (ID 21) con URL virtuale /comuni-fua/
+ */
+add_filter('page_link', function ($link, $post_id, $sample) {
 
+    if ((int) $post_id === 21) {
+        return home_url('/comuni-fua/');
+    }
+
+    return $link;
+
+}, 99, 3);
+
+/**
+ * Dice a WordPress che /comuni-fua/ deve caricare la pagina ID 21.
+ */
+add_action('init', function () {
+    add_rewrite_rule('^comuni-fua/?$', 'index.php?page_id=21', 'top');
+});
 
 
 
@@ -501,7 +519,7 @@ add_filter('breadcrumb_trail_items', function ($items) {
         $label = 'Comuni FUA';
         $crumb_html = sprintf(
             '<li class="breadcrumb-item"><a href="%s">%s</a></li>',
-            home_url().'/amministrazione/luoghi',
+            home_url().'/comuni-fua/',
             esc_html($label)
         );
 
@@ -545,20 +563,21 @@ add_filter('breadcrumb_trail', function ($items) {
 }, 20);
 
 
-//UN PO DI DEBUG 
-add_action('wp_footer', function () {
-  if ( ! current_user_can('manage_options') ) return;
+//UN PO DI DEBUG
+if(false) {
+    add_action('wp_footer', function () {
+        if ( ! current_user_can('manage_options') ) return;
 
-  $post_type = get_query_var('post_type');
+        $post_type = get_query_var('post_type');
 
-  echo '<div style="position:fixed;bottom:10px;left:10px;z-index:99999;background:#111;color:#fff;padding:10px;border-radius:6px;font:12px/1.4 monospace;">';
-  echo 'is_page: ' . (is_page() ? 'YES' : 'no') . '<br>';
-  echo 'is_post_type_archive: ' . (function_exists('is_post_type_archive') && is_post_type_archive() ? 'YES' : 'no') . '<br>';
-  echo 'post_type query_var: ' . (is_array($post_type) ? implode(',', $post_type) : ($post_type ?: '(none)')) . '<br>';
-  echo 'is_archive: ' . (is_archive() ? 'YES' : 'no');
-  echo '</div>';
-});
-
+        echo '<div style="position:fixed;bottom:10px;left:10px;z-index:99999;background:#111;color:#fff;padding:10px;border-radius:6px;font:12px/1.4 monospace;">';
+        echo 'is_page: ' . (is_page() ? 'YES' : 'no') . '<br>';
+        echo 'is_post_type_archive: ' . (function_exists('is_post_type_archive') && is_post_type_archive() ? 'YES' : 'no') . '<br>';
+        echo 'post_type query_var: ' . (is_array($post_type) ? implode(',', $post_type) : ($post_type ?: '(none)')) . '<br>';
+        echo 'is_archive: ' . (is_archive() ? 'YES' : 'no');
+        echo '</div>';
+    });
+}
 
 
 ?>
