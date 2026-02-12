@@ -501,7 +501,7 @@ add_filter('breadcrumb_trail_items', function ($items) {
         $label = 'Comuni FUA';
         $crumb_html = sprintf(
             '<li class="breadcrumb-item"><a href="%s">%s</a></li>',
-            home_url(),
+            home_url().'/amministrazione/luoghi',
             esc_html($label)
         );
 
