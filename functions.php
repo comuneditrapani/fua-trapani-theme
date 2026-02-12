@@ -476,6 +476,7 @@ add_action('acf/save_post', function ($post_id) {
  */
 
  add_filter('register_post_type_args', function ($args, $post_type) {
+     echo "POST_TYPE -> ".$post_type;
     if ($post_type === 'luogo') {
         $rewrite = $args['rewrite'] ?? [];
         $rewrite['slug'] = 'comuni-fua';
