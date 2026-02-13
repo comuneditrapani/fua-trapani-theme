@@ -1,5 +1,5 @@
 <?php
-global $the_query, $load_posts, $load_card_type;
+global $the_query, $load_posts, $load_card_type, $con_titolo;
 
     $load_posts = 12;
     $max_posts = isset($_GET['max_posts']) ? $_GET['max_posts'] : $load_posts;
@@ -23,9 +23,11 @@ global $the_query, $load_posts, $load_card_type;
     <form role="search" id="search-form" method="get" class="search-form">
         <button type="submit" class="d-none"></button>
         <div class="container">
+          <?php if($con_titolo) { ?>
             <h2 class="title-xxlarge mb-4">
                 Gli 11 Comuni
             </h2>
+            <?php } ?>
             <div class="row g-4" id="load-more">
                 <?php
                 foreach ( $posts as $post ) {

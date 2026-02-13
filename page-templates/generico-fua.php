@@ -50,13 +50,14 @@ get_header();
             ?>
           </section>
         </section>
-          <section id="head-section">
-            <?php
-              if (is_front_page()) {
-                  get_template_part("template-parts/luogo/tutti-luoghi");
-              }
-              get_template_part("template-parts/home/notizie");
-            ?>
+        <section id="head-section">
+          <?php
+            $con_titolo = true;
+            if (is_front_page()) {
+                get_template_part("template-parts/luogo/tutti-luoghi");
+            }
+            get_template_part("template-parts/home/notizie");
+          ?>
         </section>
       </div>
 
